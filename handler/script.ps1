@@ -1,6 +1,5 @@
 # Author: Craig Straka (craig.straka@it-partners.com)
-# Version .1 (Beta)
-# Master stored at: https://github.com/cstraka/NSX-T_Tag-Sync (/vro)
+# Version .5 (aligned with VEBA .5)
 # Intention:
 #   Synchronize vSphere tags with NSX-T tags unidiretionally (vSphere is the master)
 #   Script is used as a OpenFaas VMware Event Broker powercli function to intercept and parse vSphere events from event types:
@@ -42,33 +41,8 @@ if($env:function_debug -eq "true") {
 # Set vCenter server name to a variable from event message text
 $vcenter = ($json.source -replace "https://","" -replace "/sdk","");
 
-# Pull VM name from event message text and set it to variable.  
-$separator = "object"
-$FullFormattedMessage = $json.data.FullFormattedMessage
-if($env:function_debug -eq "true") {
-    write-host "FullFormattedMessage RAW="$FullFormattedMessage
-}
-$FullFormattedMessage.replace([Environment]::NewLine," ")
-if($env:function_debug -eq "true") {
-    write-host "FullFormattedMessage NewLine="$FullFormattedMessage
-}
-$pos = $FullFormattedMessage.IndexOf($separator)
-$rightPart = $FullFormattedMessage.Substring($pos+1)
-if($env:function_debug -eq "true") {
-    $leftPart = $FullFormattedMessage.Substring(0, $pos)
-    write-host "FullFormattedMessage leftPart="$leftPart
-    write-host "FullFormattedMessage rightPart="$rightPart
-}
-$pos = $rightPart.replace("bject","")
-$FormattedMessage = $pos.replace([Environment]::NewLine," ")
-if($env:function_debug -eq "true") {
-    write-host "FullFormattedMessage Split="$FullFormattedMessage
-}
-$FormattedMessage = $FormattedMessage.trim()
-if($env:function_debug -eq "true") {
-    write-host "FullFormattedMessage Complete="$FullFormattedMessage
-}
-$vm = $FormattedMessage
+# Pull VM name from event message and set it to variable.  
+$vm = ($json.Arguments | where-object {$_.key -eq "Object"}).Value
 
 # Test for existince of content in $vm variable and exit script early if test results false
 if($vm -eq "") {
