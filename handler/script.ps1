@@ -16,8 +16,6 @@
 # Notes:
 #   Machine names in a vCenter instance must be unique: 
 #       Script has no way, based on limited specificity of vSphere event message of the types above, to discern correct VM other than by name.
-#           Lots of work to accomodate spaces, new lines, and other anomalies in the event data to get the VM name.
-#               accomodation efforts to handle naming are ongoing as errata is reported.
 #           
 #       Script does NOT detect duplicate named VM's, VRO workflow does.  
 #           Overridding intention is to not use 'Get-VM' cmdlet, and required modules, in this script which would be required to detect dupes.
@@ -41,8 +39,8 @@ if($env:function_debug -eq "true") {
 # Set vCenter server name to a variable from event message text
 $vcenter = ($json.source -replace "https://","" -replace "/sdk","");
 
-# Pull VM name from event message and set it to variable.  
-$vm = ($json.Arguments | where-object {$_.key -eq "Object"}).Value
+# Pull VM name from event message and set it to variable. 
+$vm = ($json.data.Arguments | where-object {$_.key -eq "Object"}).Value
 
 # Test for existince of content in $vm variable and exit script early if test results false
 if($vm -eq "") {
