@@ -5,7 +5,7 @@ functions:
   nsxttagsync-vro:
     lang: powercli
     handler: ./handler
-    image: cmstraka/veba-powershell-vro:latest
+    image: cmstraka/veba-powershell-vro-tag-sync-to-nsxt:latest
     environment:
       write_debug: true
       read_debug: true
