@@ -7,10 +7,10 @@ functions:
     handler: ./handler
     image: cmstraka/veba-powershell-vro-tag-sync-to-nsxt:latest
     environment:
-      write_debug: true
-      read_debug: true
-      function_debug: true
-      skip_vro_cert_check: true
+      write_debug: false
+      read_debug: false
+      function_debug: false
+      skip_vro_cert_check: false
     secrets:
       - vro-secrets
     annotations:
